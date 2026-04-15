@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: ./backend
+    container_name: bass_backend_prod
+    ports:
+      - "8000:8000"
+    volumes:
+      - bass_data:/data           # SQLite database persists here
+      - ./audio:/app/audio:ro    # audio tracks (read-only)
+    environment:
+      - DATABASE_URL=sqlite:////data/bass_trainer.db
+      - AUDIO_DIR=/app/audio
+      - FRONTEND_URL=http://localhost
+      - BACKEND_URL=http://localhost:8000
+      - ADMIN_SECRET=${ADMIN_SECRET:-bass_admin_2026}
+      - ALLOWED_ORIGINS=http://localhost
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: bass_frontend_prod
+    ports:
+      - "80:80"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  bass_data:

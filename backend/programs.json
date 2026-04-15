@@ -1,0 +1,79 @@
+{
+  "id": "30min_full_bass",
+  "duration": 30,
+  "blocks": [
+    {
+      "type": "fretboard",
+      "duration": 300,
+      "title": "Fretboard Mastery",
+      "instructions": [
+        "Say note names out loud",
+        "Focus on open strings",
+        "Then move to fret markers (3,5,7,9,12)",
+        "Randomize positions"
+      ]
+    },
+    {
+      "type": "technique",
+      "duration": 300,
+      "title": "Technique Practice",
+      "instructions": [
+        "Choose one:",
+        "- Slap basics",
+        "- Finger alternation",
+        "- Ear training intervals"
+      ]
+    },
+    {
+      "type": "rhythm",
+      "duration": 300,
+      "title": "Rhythm Training",
+      "instructions": [
+        "Play along with drums",
+        "When drums stop - keep the groove",
+        "Stay locked to tempo"
+      ],
+      "config": {
+        "tracks": [
+          "Module 14 Lesson 1 Intro to Ultimate Groove Workout Full.mp3",
+          "Module 14 Lesson 2 More Ultimate Groove Workout Full.mp3",
+          "Module 14 Lesson 2 More Ultimate Groove Workout Med.mp3"
+        ],
+        "mode": "random",
+        "loop": true
+      }
+    },
+    {
+      "type": "improv",
+      "duration": 300,
+      "title": "Improvisation",
+      "instructions": [
+        "Start on root (1)",
+        "Use 5ths and octaves",
+        "Add triads",
+        "Use pentatonic scale",
+        "Build a groove and repeat"
+      ],
+      "config": {
+        "tracks": [
+          "Module 15 Lesson 1 Vamping with the Drummer Full.mp3",
+          "Module 15 Lesson 2 Creating a Chord Progression Full.mp3",
+          "Module 15 Lesson 3 Jumping Into a Guitar Vamp Full.mp3",
+          "Module 15 Lesson 5 Epic Final Jam Full Song Dynamics.mp3"
+        ],
+        "mode": "random"
+      }
+    },
+    {
+      "type": "fun",
+      "duration": 600,
+      "title": "Learn a Song / Have Fun",
+      "instructions": [
+        "Pick a song you like",
+        "Play along",
+        "Focus on groove and feel",
+        "Enjoy it"
+      ]
+    }
+  ]
+}

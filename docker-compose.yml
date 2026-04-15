@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: ./backend
+    container_name: bass_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      # ── Google OAuth ──────────────────────────────────────────────────────
+      # 1. Go to https://console.cloud.google.com/apis/credentials
+      # 2. Create OAuth 2.0 Client ID (Application type: Web application)
+      # 3. Add Authorized redirect URI: http://localhost:8000/auth/google/callback
+      # 4. Paste your credentials below:
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      # ─────────────────────────────────────────────────────────────────────
+      - FRONTEND_URL=http://localhost:5173
+      - BACKEND_URL=http://localhost:8000
+      # Admin dashboard secret (default: bass_admin_2026)
+      - ADMIN_SECRET=${ADMIN_SECRET:-bass_admin_2026}
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: bass_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - ./audio:/app/public/audio:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
