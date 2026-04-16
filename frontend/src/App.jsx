@@ -258,10 +258,10 @@ export default function App() {
 
   return (
     <div style={styles.root}>
-      <header style={styles.header}>
+      <header style={styles.header} className="hdr">
         <span style={styles.logo}>Bass Trainer</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
+        <div className="hdr-right" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span className="hdr-username" style={{ fontSize: 13, color: "var(--text-muted)" }}>
             {user.username}
             {user.is_guest && (
               <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 99, background: "#e8ff4722", color: "#e8ff47", border: "1px solid #e8ff4744" }}>
@@ -269,12 +269,12 @@ export default function App() {
               </span>
             )}
           </span>
-          {!user.is_guest && <button style={styles.headerBtn} onClick={() => setShowStats(true)}>Stats</button>}
-          <button style={{ ...styles.headerBtn, color: "#ff6b6b" }} onClick={handleLogout}>Logout</button>
+          {!user.is_guest && <button className="hdr-btn" style={styles.headerBtn} onClick={() => setShowStats(true)}>Stats</button>}
+          <button className="hdr-btn" style={{ ...styles.headerBtn, color: "#ff6b6b" }} onClick={handleLogout}>Logout</button>
         </div>
       </header>
 
-      <main style={styles.main}>
+      <main style={styles.main} className="main">
         {state.phase === IDLE && <IdleScreen onStart={handleStart} />}
         {(state.phase === RUNNING || state.phase === PAUSED) && currentBlock && (
           <SessionScreen
@@ -477,7 +477,7 @@ function IdleScreen({ onStart }) {
   }
 
   return (
-    <div style={{ ...styles.centerBox, maxWidth: 500 }}>
+    <div className="center-box" style={{ ...styles.centerBox, maxWidth: 500 }}>
       <h1 style={styles.idleTitle}>Ready to practice?</h1>
 
       <div style={idle.list}>
@@ -489,6 +489,7 @@ function IdleScreen({ onStart }) {
 
           return (
             <div
+              className="idle-row"
               key={block.type}
               style={{ ...idle.row, opacity: block.enabled ? 1 : 0.4, borderBottom: i < blocks.length - 1 ? "1px solid var(--border)" : "none" }}
             >
@@ -531,6 +532,7 @@ function IdleScreen({ onStart }) {
 
               {/* Quick-start: launch this block solo */}
               <button
+                className="idle-solo"
                 style={{ ...idle.soloBtn, background: color + "18", color, borderColor: color + "40" }}
                 onClick={() => onStart([{ ...block, enabled: true }])}
                 title={`Start ${block.title} only`}
@@ -578,7 +580,7 @@ function SessionScreen({ block, blockIndex, totalBlocks, secondsLeft, totalSecon
   const overallPct    = ((blockIndex + (1 - progress)) / totalBlocks) * 100;
 
   return (
-    <div style={ses.wrap}>
+    <div style={ses.wrap} className="session-wrap">
       {/* Overall progress bar */}
       <div style={ses.progressTrack}>
         <div style={{ ...ses.progressFill, width: `${overallPct}%`, background: color }} />
@@ -627,8 +629,9 @@ function SessionScreen({ block, blockIndex, totalBlocks, secondsLeft, totalSecon
 
         {/* Time adjustment controls */}
         {adjusting && (
-          <div style={ses.adjustRow}>
+          <div className="adjust-row" style={ses.adjustRow}>
             <button
+              className="adjust-btn"
               style={{ ...ses.adjustBtn, opacity: secondsLeft <= 10 ? 0.3 : 1 }}
               onClick={e => { e.stopPropagation(); onAdjustTime(-60); }}
               disabled={secondsLeft <= 10}
@@ -637,6 +640,7 @@ function SessionScreen({ block, blockIndex, totalBlocks, secondsLeft, totalSecon
             </button>
             <span style={ses.adjustHint}>tap timer to close</span>
             <button
+              className="adjust-btn"
               style={ses.adjustBtn}
               onClick={e => { e.stopPropagation(); onAdjustTime(+60); }}
             >
@@ -648,19 +652,20 @@ function SessionScreen({ block, blockIndex, totalBlocks, secondsLeft, totalSecon
 
       {/* Music player — rhythm & improv only */}
       {hasAudio && (
-        <div style={{ ...ses.musicCard, borderColor: color + "40" }}>
+        <div className="music-card" style={{ ...ses.musicCard, borderColor: color + "40" }}>
           <div style={ses.musicInfo}>
             <span style={ses.musicLabel}>&#9835; NOW PLAYING</span>
             <span style={ses.musicName}>{currentTrack || "Loading…"}</span>
           </div>
-          <div style={ses.musicBtns}>
+          <div className="music-btns" style={ses.musicBtns}>
             <button
+              className="music-btn"
               style={{ ...ses.musicBtn, background: color + "18", color, borderColor: color + "44" }}
               onClick={onMusicToggle}
             >
               {audioPlaying ? "⏸ Pause" : "▶ Play"}
             </button>
-            <button style={ses.musicBtnGhost} onClick={onNextTrack}>
+            <button className="music-btn" style={ses.musicBtnGhost} onClick={onNextTrack}>
               &#8635; Next track
             </button>
           </div>
@@ -686,8 +691,9 @@ function SessionScreen({ block, blockIndex, totalBlocks, secondsLeft, totalSecon
       )}
 
       {/* Primary controls */}
-      <div style={ses.controls}>
+      <div className="ctrl-row" style={ses.controls}>
         <button
+          className="ctrl-btn"
           style={{ ...ses.ctrlBtn, opacity: blockIndex === 0 ? 0.28 : 1 }}
           onClick={onPrev}
           disabled={blockIndex === 0}
@@ -696,12 +702,13 @@ function SessionScreen({ block, blockIndex, totalBlocks, secondsLeft, totalSecon
           ← Prev
         </button>
         <button
+          className="ctrl-btn-main"
           style={{ ...ses.ctrlBtnMain, background: color, color: "#0d0d0d" }}
           onClick={onPauseResume}
         >
           {paused ? "▶ Resume" : "⏸ Pause"}
         </button>
-        <button style={ses.ctrlBtn} onClick={onNext}>
+        <button className="ctrl-btn" style={ses.ctrlBtn} onClick={onNext}>
           Next →
         </button>
       </div>
@@ -807,7 +814,7 @@ function DoneScreen({ onReset, summary }) {
   ].filter(Boolean);
 
   return (
-    <div style={{ ...styles.centerBox, gap: 20 }}>
+    <div className="center-box" style={{ ...styles.centerBox, gap: 20 }}>
       {/* Trophy ring */}
       <div style={done.ring}>
         <span style={{ fontSize: 36, lineHeight: 1 }}>&#10003;</span>
@@ -887,9 +894,9 @@ function FretboardQuiz({ color, paused, onScoreChange }) {
         <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, color }}>{score.correct} / {score.total}</span>
       </div>
 
-      <div style={styles.questionBox}>
+      <div className="question-box" style={styles.questionBox}>
         <p style={styles.questionLabel}>What note is this?</p>
-        <p style={styles.questionText}>{questionText}</p>
+        <p className="question-text" style={styles.questionText}>{questionText}</p>
         <MiniFretboard string={question.string} fret={question.fret} color={color}
           revealed={status === "correct" || revealed} answer={question.answer} />
       </div>
@@ -911,7 +918,7 @@ function FretboardQuiz({ color, paused, onScoreChange }) {
         </div>
       )}
 
-      <div style={styles.noteGrid}>
+      <div className="note-grid" style={styles.noteGrid}>
         {NOTES.map((note) => {
           const isCorrect = (status === "correct" || revealed) && note === question.answer;
           const isWrong   = status === "wrong" && note === wrongGuess;
@@ -1062,7 +1069,7 @@ function EarTrainingQuiz({ color, paused, onScoreChange }) {
       <div style={styles.questionBox}>
         <p style={styles.questionLabel}>Identify the interval</p>
         <p style={{ color: "var(--text-muted)", fontSize: 13, marginBottom: 12 }}>Two notes will play sequentially — ascending</p>
-        <button style={{ ...styles.playBtn, background: playing ? "var(--border)" : color, color: playing ? "var(--text-muted)" : "#0d0d0d", cursor: playing ? "default" : "pointer" }}
+        <button className="play-btn" style={{ ...styles.playBtn, background: playing ? "var(--border)" : color, color: playing ? "var(--text-muted)" : "#0d0d0d", cursor: playing ? "default" : "pointer" }}
           onClick={handlePlay} disabled={playing || paused}>
           {playing ? "♪  Playing..." : status === "idle" ? "▶  Play Interval" : "↺  Play Again"}
         </button>
@@ -1087,7 +1094,7 @@ function EarTrainingQuiz({ color, paused, onScoreChange }) {
         </div>
       )}
 
-      <div style={styles.intervalGrid}>
+      <div className="interval-grid" style={styles.intervalGrid}>
         {activePool.map((interval) => {
           const isCorrect = status === "correct" && interval.semitones === question.interval.semitones;
           const isWrong   = status === "wrong"   && interval.semitones === wrongGuess?.semitones;

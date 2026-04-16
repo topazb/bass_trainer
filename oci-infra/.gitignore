@@ -1,0 +1,23 @@
+# ── Terraform state ───────────────────────────────────────────────────────────
+# State files can contain secrets — never commit them.
+*.tfstate
+*.tfstate.backup
+
+# ── Terraform working directory ───────────────────────────────────────────────
+.terraform/
+.terraform.lock.hcl
+
+# ── Credentials / real variable values ───────────────────────────────────────
+# terraform.tfvars contains your OCI OCIDs and key paths — keep it local.
+terraform.tfvars
+*.auto.tfvars
+
+# ── Crash logs ────────────────────────────────────────────────────────────────
+crash.log
+crash.*.log
+
+# ── Override files ────────────────────────────────────────────────────────────
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

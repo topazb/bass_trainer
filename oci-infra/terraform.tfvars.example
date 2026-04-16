@@ -1,0 +1,35 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# terraform.tfvars.example
+#
+# Copy this file to terraform.tfvars and fill in your real values.
+# terraform.tfvars is listed in .gitignore — never commit it.
+#
+# Where to find OCI IDs:
+#   tenancy_ocid     → OCI Console → top-right avatar → Tenancy
+#   user_ocid        → OCI Console → top-right avatar → My Profile
+#   compartment_ocid → OCI Console → Identity → Compartments (or use tenancy_ocid for root)
+#   fingerprint      → OCI Console → My Profile → API Keys → paste the fingerprint shown
+#   private_key_path → path to the .pem file you downloaded when adding the API key
+# ─────────────────────────────────────────────────────────────────────────────
+
+# OCI authentication
+tenancy_ocid     = "ocid1.tenancy.oc1..aaaaaaaa_REPLACE_ME"
+user_ocid        = "ocid1.user.oc1..aaaaaaaa_REPLACE_ME"
+compartment_ocid = "ocid1.tenancy.oc1..aaaaaaaa_REPLACE_ME"  # root compartment = same as tenancy_ocid
+fingerprint      = "aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99"
+private_key_path = "~/.oci/oci_api_key.pem"
+
+# OCI region — pick the one closest to you
+# Full list: https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm
+region = "us-ashburn-1"
+
+# SSH public key for VM access (the ubuntu user on the instance)
+ssh_public_key_path = "~/.ssh/id_rsa.pub"
+
+# Restrict SSH to your IP — strongly recommended
+# Find your IP: curl ifconfig.me
+# Format: "1.2.3.4/32" for a single IP
+admin_cidr = "0.0.0.0/0"  # TODO: replace with your IP
+
+# Port your app listens on (opened to the world)
+app_port = 8080

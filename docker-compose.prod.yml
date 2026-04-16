@@ -1,6 +1,7 @@
 services:
   backend:
     build: ./backend
+    image: bass_trainer-backend-prod
     container_name: bass_backend_prod
     ports:
       - "8000:8000"
@@ -22,6 +23,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
+    image: bass_trainer-frontend-prod
     container_name: bass_frontend_prod
     ports:
       - "80:80"

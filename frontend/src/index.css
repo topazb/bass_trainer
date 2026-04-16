@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :root {
@@ -36,6 +37,71 @@ button {
   font-family: inherit;
   border: none;
   outline: none;
+  touch-action: manipulation; /* prevents 300ms tap delay */
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  /* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */
+  input, select, textarea { font-size: 16px !important; }
+
+  /* ── Header ── */
+  .hdr          { padding: 10px 14px !important; }
+  .hdr-username { display: none !important; }
+  .hdr-btn      { padding: 7px 10px !important; font-size: 11px !important; min-height: 36px !important; }
+
+  /* ── Main area ── */
+  .main { padding: 16px 10px !important; }
+
+  /* ── Idle screen block rows ── */
+  .idle-row  { padding: 10px 10px !important; gap: 8px !important; }
+  .idle-solo { width: 32px !important; height: 32px !important; }
+
+  /* ── Session wrap ── */
+  .session-wrap { padding: 2px 10px 12px !important; gap: 10px !important; }
+
+  /* ── Session controls ── */
+  .ctrl-row          { gap: 7px !important; }
+  .ctrl-btn          { padding: 14px 12px !important; min-height: 52px !important; font-size: 13px !important; }
+  .ctrl-btn-main     { padding: 14px 0 !important; min-height: 52px !important; }
+
+  /* ── Time adjust ── */
+  .adjust-row .adjust-btn { min-height: 48px !important; padding: 8px 18px !important; }
+
+  /* ── Music player: stack on narrow screens ── */
+  .music-card { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+  .music-btns { width: 100% !important; justify-content: space-between !important; }
+  .music-btn  { flex: 1 !important; justify-content: center !important; }
+
+  /* ── Note grid: taller tap targets ── */
+  .note-grid        { gap: 6px !important; }
+  .note-grid button { min-height: 48px !important; font-size: 13px !important; padding: 4px !important; }
+
+  /* ── Interval grid: 2 columns on mobile ── */
+  .interval-grid        { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+  .interval-grid button { min-height: 56px !important; padding: 8px 4px !important; }
+
+  /* ── Quiz question box ── */
+  .question-box  { padding: 12px 10px !important; }
+  .question-text { font-size: 17px !important; }
+
+  /* ── Play button (ear training) ── */
+  .play-btn { min-height: 54px !important; font-size: 16px !important; }
+
+  /* ── Stats panel: slide up from bottom ── */
+  .stats-overlay { align-items: flex-end !important; padding: 0 !important; }
+  .stats-panel {
+    max-height: 92dvh !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: 0 !important;
+  }
+  .stats-scroll { padding: 14px 16px 28px !important; }
+  .stats-big-row { gap: 6px !important; }
+  .stats-big-row > div { padding: 10px 6px !important; }
+
+  /* ── Done / center screens ── */
+  .center-box { gap: 14px !important; }
 }
 
 ul {

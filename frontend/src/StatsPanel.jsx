@@ -14,8 +14,8 @@ export default function StatsPanel({ token, user, onClose }) {
   }, [token]);
 
   return (
-    <div style={s.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={s.panel}>
+    <div className="stats-overlay" style={s.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="stats-panel" style={s.panel}>
         {/* Header */}
         <div style={s.panelHeader}>
           <div>
@@ -27,14 +27,14 @@ export default function StatsPanel({ token, user, onClose }) {
           <button style={s.closeBtn} onClick={onClose}>✕</button>
         </div>
 
-        <div style={s.scroll}>
+        <div className="stats-scroll" style={s.scroll}>
           {loading && <p style={s.muted}>Loading...</p>}
           {error   && <p style={{ color: "#ff6b6b", fontSize: 14 }}>Failed to load stats</p>}
 
           {stats && (
             <>
               {/* Big 3 cards */}
-              <div style={s.bigRow}>
+              <div className="stats-big-row" style={s.bigRow}>
                 <StatCard
                   label="Streak"
                   value={stats.current_streak}

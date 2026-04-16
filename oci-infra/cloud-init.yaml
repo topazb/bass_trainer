@@ -1,0 +1,32 @@
+#cloud-config
+# ─────────────────────────────────────────────────────────────────────────────
+# cloud-init.yaml — runs once on first boot
+#
+# What this does:
+#   1. Updates the package index
+#   2. Installs curl and git
+#   3. Installs Docker via the official convenience script
+#   4. Enables and starts the Docker daemon
+#   5. Adds the ubuntu user to the docker group (so sudo is not required)
+# ─────────────────────────────────────────────────────────────────────────────
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - curl
+  - git
+  - ca-certificates
+  - gnupg
+
+runcmd:
+  # Install Docker using the official convenience script.
+  # Works on Ubuntu ARM64 (A1 shape) out of the box.
+  - curl -fsSL https://get.docker.com | sh
+
+  # Add ubuntu to the docker group — takes effect on next login
+  - usermod -aG docker ubuntu
+
+  # Ensure Docker starts now and on every reboot
+  - systemctl enable docker
+  - systemctl start docker
