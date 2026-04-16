@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "./api.js";
+import ThemeToggle from "./ThemeToggle.jsx";
 
 export default function LoginScreen({ onAuth, oauthError }) {
   const [mode, setMode]         = useState("login");
@@ -47,6 +48,9 @@ export default function LoginScreen({ onAuth, oauthError }) {
   return (
     <div style={s.overlay}>
       <div style={s.card}>
+        <div style={{ position: "absolute", top: 14, right: 14 }}>
+          <ThemeToggle />
+        </div>
         <div style={s.logoRow}>
           <span style={s.logo}>🎸</span>
           <span style={s.appName}>Bass Trainer</span>
@@ -149,6 +153,7 @@ const s = {
     display: "flex",
     flexDirection: "column",
     gap: 14,
+    position: "relative",
   },
   logoRow: { display: "flex", alignItems: "center", gap: 10, justifyContent: "center", marginBottom: 4 },
   logo:    { fontSize: 30 },

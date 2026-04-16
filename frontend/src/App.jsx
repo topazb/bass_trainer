@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback, useReducer, useState } from "react";
 import LoginScreen from "./LoginScreen.jsx";
+import ThemeToggle from "./ThemeToggle.jsx";
 import StatsPanel  from "./StatsPanel.jsx";
 import AdminApp    from "./AdminPanel.jsx";
 import { api, fmtTime } from "./api.js";
@@ -272,43 +273,7 @@ export default function App() {
             )}
           </span>
           {!user.is_guest && <button className="hdr-btn" style={styles.headerBtn} onClick={() => setShowStats(true)}>Stats</button>}
-          <button
-            onClick={toggleTheme}
-            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            style={{
-              background: "none", border: "none", padding: 0, cursor: "pointer",
-              display: "flex", alignItems: "center", gap: 6,
-            }}
-          >
-            {/* sun icon */}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={theme === "light" ? "var(--accent)" : "var(--text-muted)"} strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-            {/* track */}
-            <div style={{
-              width: 36, height: 20, borderRadius: 10, position: "relative",
-              background: theme === "dark" ? "#333" : "#ccc",
-              border: "1px solid var(--border)",
-              transition: "background 0.2s",
-              flexShrink: 0,
-            }}>
-              {/* knob */}
-              <div style={{
-                position: "absolute", top: 2,
-                left: theme === "dark" ? 2 : 16,
-                width: 14, height: 14, borderRadius: "50%",
-                background: theme === "dark" ? "var(--text-muted)" : "var(--accent)",
-                transition: "left 0.2s, background 0.2s",
-              }}/>
-            </div>
-            {/* moon icon */}
-            <svg width="13" height="13" viewBox="0 0 24 24" fill={theme === "dark" ? "var(--text)" : "none"} stroke={theme === "dark" ? "var(--text)" : "var(--text-muted)"} strokeWidth="2" strokeLinecap="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-          </button>
+          <ThemeToggle />
           <button className="hdr-btn" style={{ ...styles.headerBtn, color: "#ff6b6b" }} onClick={handleLogout}>Logout</button>
         </div>
       </header>
