@@ -1,8 +1,35 @@
+# ── HTTP: redirect to HTTPS + Let's Encrypt challenge ────────────────────────
 server {
     listen 80;
     server_name _;
+
+    # Let's Encrypt webroot challenge (certbot needs this for renewal)
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    # Redirect all other HTTP traffic to HTTPS
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# ── HTTPS ─────────────────────────────────────────────────────────────────────
+server {
+    listen 443 ssl;
+    server_name _;
     root /usr/share/nginx/html;
     index index.html;
+
+    # TLS certificates — mounted from host /etc/letsencrypt
+    ssl_certificate     /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+
+    # Modern TLS settings
+    ssl_protocols             TLSv1.2 TLSv1.3;
+    ssl_ciphers               HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache         shared:SSL:10m;
 
     # Compression
     gzip on;
@@ -11,7 +38,6 @@ server {
     gzip_min_length 1024;
 
     # ── Proxy API + audio to the FastAPI backend ──────────────────────────────
-    # BACKEND_URL is injected at startup (e.g. https://my-backend.northflank.app)
     location ~* ^/(auth|programs|sessions|stats|health|audio) {
         proxy_pass $BACKEND_URL;
         proxy_set_header Host              $host;

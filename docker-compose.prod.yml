@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    # Multi-stage build: Vite build + Nginx serving + envsubst for BACKEND_URL
+    # Multi-stage build: Vite build + Nginx serving + envsubst for BACKEND_URL + DOMAIN
     image: ghcr.io/topazb/bass-trainer-frontend:latest
     build:
       context: ./frontend
@@ -31,9 +31,17 @@ services:
     container_name: bass_frontend
     ports:
       - "80:80"
+      - "443:443"
     environment:
       # Internal Docker network URL — Nginx proxies API calls here
       - BACKEND_URL=http://backend:8000
+      # Domain name used for TLS certificate path
+      - DOMAIN=${DOMAIN:-bass-practice.duckdns.org}
+    volumes:
+      # TLS certs from host certbot — read-only
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Webroot for Let's Encrypt HTTP challenge (renewal)
+      - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       - backend
     restart: unless-stopped
