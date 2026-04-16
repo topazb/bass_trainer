@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bass Trainer — Personal Bass Practice App</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f0f0f; color: #e0e0e0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; }
+    .card { max-width: 520px; width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 40px 32px; text-align: center; }
+    .logo { font-size: 48px; margin-bottom: 16px; }
+    h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #e8ff47; }
+    .tagline { font-size: 15px; color: #aaa; margin-bottom: 28px; line-height: 1.5; }
+    .features { text-align: left; list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 10px; }
+    .features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #ccc; line-height: 1.5; }
+    .features li::before { content: "✓"; color: #e8ff47; font-weight: 700; flex-shrink: 0; }
+    .cta { display: inline-block; background: #e8ff47; color: #0f0f0f; font-weight: 700; font-size: 16px; padding: 14px 32px; border-radius: 10px; text-decoration: none; margin-bottom: 24px; }
+    .google-note { font-size: 12px; color: #666; margin-bottom: 8px; line-height: 1.5; }
+    .google-note strong { color: #999; }
+    .footer { margin-top: 20px; font-size: 12px; color: #555; }
+    .footer a { color: #666; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🎸</div>
+    <h1>Bass Trainer</h1>
+    <p class="tagline">
+      A personal bass practice app with timed sessions, interactive exercises,
+      and progress tracking — built for daily practice.
+    </p>
+
+    <ul class="features">
+      <li>Structured practice sessions with configurable block durations</li>
+      <li>Fretboard mastery quiz — guess the note on any string and fret</li>
+      <li>Ear training — identify intervals by ear (simple, diatonic, or all)</li>
+      <li>Rhythm and improvisation exercises with backing tracks</li>
+      <li>Practice stats — track time spent per week, month, and year</li>
+      <li>Sign in with Google or create an account to save your progress</li>
+    </ul>
+
+    <a href="/" class="cta">Open Bass Trainer</a>
+
+    <p class="google-note">
+      <strong>Sign in with Google</strong> is used only to identify your account.
+      We access your name and email to create your profile.
+      We do not access any other Google data.
+    </p>
+
+    <div class="footer">
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</body>
+</html>
