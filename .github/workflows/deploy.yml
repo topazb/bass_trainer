@@ -76,31 +76,20 @@ jobs:
 
       - name: SSH deploy
         uses: appleboy/ssh-action@v1
-        env:
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          GHCR_USER:  ${{ github.repository_owner }}
         with:
-          host:            ${{ secrets.OCI_HOST }}
-          username:        ubuntu
-          key_path:        /tmp/deploy_key
-          host_key_checking: false
-          envs: GHCR_TOKEN,GHCR_USER
+          host:     ${{ secrets.OCI_HOST }}
+          username: ubuntu
+          key_path: /tmp/deploy_key
           script: |
             set -e
 
-            # Pull latest compose file and config from the repo
-            git -C ~/bass_trainer pull \
-              "https://${GHCR_USER}:${GHCR_TOKEN}@github.com/${GHCR_USER}/bass_trainer.git" \
-              master
+            # Pull latest compose file from the repo (public repo, no auth needed)
+            git -C ~/bass_trainer pull origin master
 
-            # Login to ghcr.io so Docker can pull private images
-            # (skip this step if you make your packages public)
-            echo "${GHCR_TOKEN}" | docker login ghcr.io -u "${GHCR_USER}" --password-stdin
-
-            # Pull the freshly built images
+            # Pull the freshly built images (packages must be public on ghcr.io)
             docker compose -f ~/bass_trainer/docker-compose.prod.yml pull
 
-            # Restart services with zero manual downtime
+            # Restart services
             docker compose -f ~/bass_trainer/docker-compose.prod.yml up -d --remove-orphans
 
             # Remove old/dangling images to save disk space
