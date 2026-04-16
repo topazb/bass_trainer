@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, useReducer, useState } from "react";
 import LoginScreen from "./LoginScreen.jsx";
 import ThemeToggle from "./ThemeToggle.jsx";
+import { useToast } from "./Toast.jsx";
 import StatsPanel  from "./StatsPanel.jsx";
 import AdminApp    from "./AdminPanel.jsx";
 import { api, fmtTime } from "./api.js";
@@ -47,6 +48,7 @@ export default function App() {
   if (window.location.pathname === "/admin") return <AdminApp />;
 
   const { theme, toggle: toggleTheme } = useTheme();
+  const toast = useToast();
 
   // Auth
   const [user,       setUser]       = useState(() => { try { return JSON.parse(localStorage.getItem("bt_user")); } catch { return null; } });
@@ -124,7 +126,10 @@ export default function App() {
     sessionIdRef.current = null;
     try {
       await api.completeSession(sid, { duration_seconds: durationSeconds, completed, blocks_completed: blocksCompleted, quiz_results: quizResults }, tok);
-    } catch { /* fire and forget */ }
+    } catch (err) {
+      console.error("[completeSession] failed to save session:", err);
+      // non-blocking — session already happened, just couldn't save stats
+    }
   }
 
   // ── Audio ──
@@ -231,12 +236,16 @@ export default function App() {
         sessionIdRef.current = null;
         dispatch({ type: "START", program: applyConfig(base) });
       }
-    } catch {
+    } catch (err) {
+      console.error("[handleStart] session start failed:", err);
       try {
         const base = await api.getProgram(30);
         sessionIdRef.current = null;
         dispatch({ type: "START", program: applyConfig(base) });
-      } catch { alert("Failed to load program"); }
+      } catch (err2) {
+        console.error("[handleStart] program load failed:", err2);
+        toast("Failed to load program. Check your connection and try again.", "error");
+      }
     }
   }
 

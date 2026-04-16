@@ -1,6 +1,8 @@
 import json
+import logging
 import os
 import re
+import time
 import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, date, timedelta
@@ -8,9 +10,9 @@ from pathlib import Path
 from urllib.parse import urlencode, quote
 
 import httpx
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text, func
@@ -20,6 +22,17 @@ from typing import Optional
 import models
 import auth
 from database import engine, get_db, Base
+
+# ── Logging setup ─────────────────────────────────────────────────────────────
+
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
+
+logging.basicConfig(
+    level=LOG_LEVEL,
+    format="%(asctime)s %(levelname)-8s %(name)s  %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
+log = logging.getLogger("bass_trainer")
 
 PROGRAMS_FILE  = Path(__file__).parent / "programs.json"
 GOOGLE_AUTH_URL  = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -38,6 +51,7 @@ admin_bearer = HTTPBearer(auto_error=False)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    log.info("Starting Bass Trainer API (log_level=%s)", LOG_LEVEL)
     Base.metadata.create_all(bind=engine)
     with engine.connect() as conn:
         for stmt in [
@@ -50,10 +64,54 @@ async def lifespan(app: FastAPI):
                 conn.commit()
             except Exception:
                 pass
+    log.info("Database ready")
     yield
+    log.info("Bass Trainer API shutting down")
 
 
 app = FastAPI(title="Bass Trainer API", lifespan=lifespan)
+
+# ── Request/response logging middleware ───────────────────────────────────────
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start = time.monotonic()
+    try:
+        response = await call_next(request)
+    except Exception as exc:
+        duration_ms = int((time.monotonic() - start) * 1000)
+        log.error("UNHANDLED  %s %s  [%dms]  %s",
+                  request.method, request.url.path, duration_ms, exc, exc_info=True)
+        raise
+    duration_ms = int((time.monotonic() - start) * 1000)
+    level = logging.WARNING if response.status_code >= 400 else logging.INFO
+    log.log(level, "%d  %s %s  [%dms]",
+            response.status_code, request.method, request.url.path, duration_ms)
+    return response
+
+
+# ── Global exception handler ─────────────────────────────────────────────────
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    log.error("Unhandled exception on %s %s: %s",
+              request.method, request.url.path, exc, exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error. Please try again."},
+    )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    if exc.status_code >= 500:
+        log.error("HTTP %d on %s %s: %s",
+                  exc.status_code, request.method, request.url.path, exc.detail)
+    elif exc.status_code >= 400:
+        log.warning("HTTP %d on %s %s: %s",
+                    exc.status_code, request.method, request.url.path, exc.detail)
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -110,6 +168,7 @@ def register(body: dict, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+    log.info("New user registered: id=%d username=%s", user.id, user.username)
     return {"token": auth.create_token(user.id), "user": {"id": user.id, "username": user.username, "is_guest": False}}
 
 
@@ -119,7 +178,9 @@ def login(body: dict, db: Session = Depends(get_db)):
     password = body.get("password") or ""
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user or not auth.verify_password(password, user.password_hash):
+        log.warning("Failed login attempt for username=%s", username)
         raise HTTPException(401, "Invalid username or password")
+    log.info("User logged in: id=%d username=%s", user.id, user.username)
     return {"token": auth.create_token(user.id), "user": {"id": user.id, "username": user.username, "is_guest": bool(user.is_guest)}}
 
 
@@ -143,6 +204,7 @@ def guest_login(db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+    log.info("Guest session created: id=%d username=%s", user.id, user.username)
     return {
         "token": auth.create_token(user.id),
         "user":  {"id": user.id, "username": user.username, "is_guest": True},
@@ -255,6 +317,8 @@ def start_session(
     db.add(session)
     db.commit()
     db.refresh(session)
+    log.info("Session started: session_id=%d user_id=%d program=%s",
+             session.id, current_user.id, session.program_id)
     return {"session_id": session.id, "program": program}
 
 
@@ -286,6 +350,9 @@ def complete_session(
                 difficulty=qr.get("difficulty"),
             ))
     db.commit()
+    log.info("Session completed: session_id=%d user_id=%d duration=%ds blocks=%d completed=%s",
+             session_id, current_user.id, session.duration_seconds,
+             session.blocks_completed, session.completed)
     return {"status": "ok"}
 
 
