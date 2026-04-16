@@ -69,17 +69,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Write SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.OCI_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.OCI_HOST }} >> ~/.ssh/known_hosts
+
       - name: SSH deploy
         uses: appleboy/ssh-action@v1
         env:
-          # GHCR_TOKEN: GitHub PAT with read:packages + repo scopes
-          # Add it at: github.com/topazb/bass_trainer/settings/secrets/actions
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           GHCR_USER:  ${{ github.repository_owner }}
         with:
-          host:     ${{ secrets.OCI_HOST }}    # your server's public IP
+          host:     ${{ secrets.OCI_HOST }}
           username: ubuntu
-          key:      ${{ secrets.OCI_SSH_KEY }} # private key content (see DEPLOY.md)
+          key_path: ~/.ssh/deploy_key
           envs: GHCR_TOKEN,GHCR_USER
           script: |
             set -e
