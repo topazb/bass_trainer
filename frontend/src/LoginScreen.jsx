@@ -118,6 +118,13 @@ export default function LoginScreen({ onAuth, oauthError }) {
             {loading ? "..." : mode === "login" ? "Login" : "Create Account"}
           </button>
         </form>
+
+        <p style={{ textAlign: "center", fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>
+          <a href="/privacy.html" target="_blank" rel="noopener noreferrer"
+            style={{ color: "var(--text-muted)", textDecoration: "underline" }}>
+            Privacy Policy
+          </a>
+        </p>
       </div>
     </div>
   );
