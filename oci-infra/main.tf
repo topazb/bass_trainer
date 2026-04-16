@@ -39,13 +39,13 @@ data "oci_identity_availability_domains" "ads" {
 }
 
 # ── OS Image ─────────────────────────────────────────────────────────────────
-# Find the most recent Canonical Ubuntu image that supports the A1 (ARM) shape.
+# Find the most recent Canonical Ubuntu image that supports the E2.1.Micro (x86) shape.
 # Sorted descending by creation time so index [0] is always the newest.
 
 data "oci_core_images" "ubuntu" {
   compartment_id   = var.compartment_ocid
   operating_system = "Canonical Ubuntu"
-  shape            = "VM.Standard.A1.Flex"
+  shape            = "VM.Standard.E2.1.Micro"
   sort_by          = "TIMECREATED"
   sort_order       = "DESC"
   state            = "AVAILABLE"
@@ -176,20 +176,15 @@ resource "oci_core_subnet" "public" {
 # COMPUTE
 # ─────────────────────────────────────────────────────────────────────────────
 
-# VM.Standard.A1.Flex is the Always Free ARM (Ampere) shape.
-# Always Free pool: 4 OCPUs + 24 GB RAM shared across all A1 instances.
-# This instance uses 1 OCPU + 6 GB — leaves plenty of headroom.
+# VM.Standard.E2.1.Micro is an Always Free x86 shape.
+# Always Free: 2 instances allowed, 1 OCPU + 1 GB RAM each (fixed size, no shape_config).
 
 resource "oci_core_instance" "app" {
   compartment_id      = var.compartment_ocid
   availability_domain = local.ad
   display_name        = "app-server"
 
-  shape = "VM.Standard.A1.Flex"
-  shape_config {
-    ocpus         = 1
-    memory_in_gbs = 6
-  }
+  shape = "VM.Standard.E2.1.Micro"
 
   source_details {
     source_type = "image"
