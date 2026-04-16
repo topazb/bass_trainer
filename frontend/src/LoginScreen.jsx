@@ -120,12 +120,6 @@ export default function LoginScreen({ onAuth, oauthError }) {
           </button>
         </form>
 
-        <p style={{ textAlign: "center", fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
-          <a href="/privacy.html" target="_blank" rel="noopener noreferrer"
-             style={{ color: "var(--text-muted)", textDecoration: "underline" }}>
-            Privacy Policy
-          </a>
-        </p>
       </div>
     </div>
   );
