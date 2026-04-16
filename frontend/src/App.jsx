@@ -8,7 +8,7 @@ import {
   noteAt, randomFretQuestion, fretLabel,
   randomIntervalQuestion, midiToHz,
   pickRandom, getAudioSrc, cleanTrackName,
-  formatTime, blockColor,
+  formatTime, blockColor, useTheme,
 } from "./utils.js";
 import { IDLE, RUNNING, PAUSED, DONE, initialState, reducer } from "./sessionReducer.js";
 
@@ -44,6 +44,8 @@ function playIntervalTones(ctx, baseMidi, semitones, onDone) {
 export default function App() {
   // Admin route — render the BI dashboard instead of the main app
   if (window.location.pathname === "/admin") return <AdminApp />;
+
+  const { theme, toggle: toggleTheme } = useTheme();
 
   // Auth
   const [user,       setUser]       = useState(() => { try { return JSON.parse(localStorage.getItem("bt_user")); } catch { return null; } });
@@ -270,6 +272,14 @@ export default function App() {
             )}
           </span>
           {!user.is_guest && <button className="hdr-btn" style={styles.headerBtn} onClick={() => setShowStats(true)}>Stats</button>}
+          <button
+            className="hdr-btn"
+            style={{ ...styles.headerBtn, fontSize: 16, padding: "6px 10px" }}
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
           <button className="hdr-btn" style={{ ...styles.headerBtn, color: "#ff6b6b" }} onClick={handleLogout}>Logout</button>
         </div>
       </header>

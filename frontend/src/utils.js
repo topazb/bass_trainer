@@ -86,3 +86,23 @@ export function blockColor(type) {
   const map = { fretboard: "#47b3ff", technique: "#ff8c47", rhythm: "#e8ff47", improv: "#b847ff", fun: "#47ffb3" };
   return map[type] ?? "#888";
 }
+
+// ─── Theme ────────────────────────────────────────────────────────────────────
+
+export function useTheme() {
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("bt_theme");
+    if (saved) return saved;
+    // respect OS preference on first visit
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("bt_theme", theme);
+  }, [theme]);
+
+  const toggle = () => setTheme(t => t === "dark" ? "light" : "dark");
+
+  return { theme, toggle };
+}

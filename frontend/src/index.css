@@ -18,6 +18,24 @@
   --radius: 12px;
 }
 
+/* ─── Light mode ──────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg: #f2f2ed;
+  --surface: #ffffff;
+  --surface2: #eaeae4;
+  --border: #d4d4cc;
+  --accent: #6b8c00;      /* darkened yellow-green — readable on white */
+  --accent-dim: #536d00;
+  --text: #111111;
+  --text-muted: #666666;
+  --danger: #d63030;
+}
+
+/* smooth transition when switching themes */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}
+
 html, body {
   height: 100%;
   background: var(--bg);
