@@ -29,20 +29,19 @@
     />
   </head>
   <body>
+    <!-- Static footer — always in the HTML source, visible before and without JS -->
+    <footer id="static-footer" style="
+      position:fixed;bottom:0;left:0;right:0;
+      text-align:center;padding:8px;
+      font-family:sans-serif;font-size:12px;
+      background:transparent;color:#888;
+      z-index:0;pointer-events:auto;
+    ">
+      Bass Trainer &nbsp;·&nbsp;
+      <a href="/privacy.html" style="color:#888;text-decoration:underline;">Privacy Policy</a>
+    </footer>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-
-    <!-- Static content for crawlers (hidden once React mounts via #root) -->
-    <noscript>
-      <div style="font-family:sans-serif;max-width:480px;margin:60px auto;padding:0 24px;text-align:center">
-        <h1>Bass Trainer</h1>
-        <p>Personal bass practice trainer — timed sessions, fretboard quiz, ear training, and rhythm exercises.</p>
-        <p>Sign in or continue as guest to start practicing.</p>
-        <p><a href="/privacy.html">Privacy Policy</a></p>
-      </div>
-    </noscript>
-
-    <!-- Privacy policy link visible in raw HTML for verification tools -->
-    <a href="/privacy.html" style="position:absolute;left:-9999px" aria-hidden="true">Privacy Policy</a>
   </body>
 </html>
