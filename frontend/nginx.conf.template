@@ -31,6 +31,9 @@ server {
     ssl_prefer_server_ciphers on;
     ssl_session_cache         shared:SSL:10m;
 
+    # Tell browsers to always use HTTPS for this domain (1 year)
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
     # Compression
     gzip on;
     gzip_types text/plain text/css application/json application/javascript
