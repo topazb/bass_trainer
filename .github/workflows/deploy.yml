@@ -71,10 +71,8 @@ jobs:
     steps:
       - name: Write SSH key
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.OCI_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.OCI_HOST }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.OCI_SSH_KEY }}" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
 
       - name: SSH deploy
         uses: appleboy/ssh-action@v1
@@ -82,9 +80,10 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           GHCR_USER:  ${{ github.repository_owner }}
         with:
-          host:     ${{ secrets.OCI_HOST }}
-          username: ubuntu
-          key_path: ~/.ssh/deploy_key
+          host:            ${{ secrets.OCI_HOST }}
+          username:        ubuntu
+          key_path:        /tmp/deploy_key
+          host_key_checking: false
           envs: GHCR_TOKEN,GHCR_USER
           script: |
             set -e
