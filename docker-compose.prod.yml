@@ -1,33 +1,38 @@
 services:
+
   backend:
+    # On the server: CI/CD pulls this pre-built image from ghcr.io
+    # Locally:       run `docker compose -f docker-compose.prod.yml build` to build and tag it
+    image: ghcr.io/topazb/bass-trainer-backend:latest
     build: ./backend
-    image: bass_trainer-backend-prod
-    container_name: bass_backend_prod
+    container_name: bass_backend
     ports:
       - "8000:8000"
     volumes:
-      - bass_data:/data           # SQLite database persists here
-      - ./audio:/app/audio:ro    # audio tracks (read-only)
+      - bass_data:/data          # SQLite database — persists across deploys
+      - ./audio:/app/audio:ro   # music tracks — mount your audio folder here
     environment:
       - DATABASE_URL=sqlite:////data/bass_trainer.db
       - AUDIO_DIR=/app/audio
-      - FRONTEND_URL=http://localhost
-      - BACKEND_URL=http://localhost:8000
-      - ADMIN_SECRET=${ADMIN_SECRET:-bass_admin_2026}
-      - ALLOWED_ORIGINS=http://localhost
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost}
+      - BACKEND_URL=${BACKEND_URL:-http://localhost:8000}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost}
+      - ADMIN_SECRET=${ADMIN_SECRET:-change_me}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
     restart: unless-stopped
 
   frontend:
+    # Multi-stage build: Vite build + Nginx serving + envsubst for BACKEND_URL
+    image: ghcr.io/topazb/bass-trainer-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
-    image: bass_trainer-frontend-prod
-    container_name: bass_frontend_prod
+    container_name: bass_frontend
     ports:
       - "80:80"
     environment:
+      # Internal Docker network URL — Nginx proxies API calls here
       - BACKEND_URL=http://backend:8000
     depends_on:
       - backend
