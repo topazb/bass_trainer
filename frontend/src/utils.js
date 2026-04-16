@@ -92,12 +92,7 @@ export function blockColor(type) {
 // ─── Theme ────────────────────────────────────────────────────────────────────
 
 export function useTheme() {
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem("bt_theme");
-    if (saved) return saved;
-    // respect OS preference on first visit
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  });
+  const [theme, setTheme] = useState(() => localStorage.getItem("bt_theme") || "dark");
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
