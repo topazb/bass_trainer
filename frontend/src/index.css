@@ -65,9 +65,14 @@ button {
   input, select, textarea { font-size: 16px !important; }
 
   /* ── Header ── */
-  .hdr          { padding: 10px 14px !important; }
+  .hdr          { padding: 10px 12px !important; }
   .hdr-username { display: none !important; }
-  .hdr-btn      { padding: 7px 10px !important; font-size: 11px !important; min-height: 36px !important; }
+  .hdr-right    { gap: 6px !important; }
+  .hdr-btn      { padding: 6px 9px !important; font-size: 11px !important; min-height: 34px !important; }
+
+  /* Hide sun/moon labels in the toggle on small screens, keep just the track */
+  .theme-toggle-sun,
+  .theme-toggle-moon { display: none !important; }
 
   /* ── Main area ── */
   .main { padding: 16px 10px !important; }

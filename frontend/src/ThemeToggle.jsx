@@ -11,7 +11,7 @@ export default function ThemeToggle() {
       style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
     >
       {/* Sun — lights up when light mode is active */}
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      <svg className="theme-toggle-sun" width="14" height="14" viewBox="0 0 24 24" fill="none"
         stroke={!isDark ? "#f5a623" : "var(--text-muted)"}
         strokeWidth="2" strokeLinecap="round">
         <circle cx="12" cy="12" r="5"/>
@@ -44,7 +44,7 @@ export default function ThemeToggle() {
       </div>
 
       {/* Moon — lights up when dark mode is active */}
-      <svg width="13" height="13" viewBox="0 0 24 24"
+      <svg className="theme-toggle-moon" width="13" height="13" viewBox="0 0 24 24"
         fill={isDark ? "#c8d4e8" : "none"}
         stroke={isDark ? "#c8d4e8" : "var(--text-muted)"}
         strokeWidth="2" strokeLinecap="round">
