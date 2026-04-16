@@ -36,7 +36,7 @@ services:
       # Internal Docker network URL — Nginx proxies API calls here
       - BACKEND_URL=http://backend:8000
       # Domain name used for TLS certificate path
-      - DOMAIN=${DOMAIN:-bass-practice.duckdns.org}
+              - DOMAIN=${DOMAIN:-bass-trainer.duckdns.org}
     volumes:
       # TLS certs from host certbot — read-only
       - /etc/letsencrypt:/etc/letsencrypt:ro
